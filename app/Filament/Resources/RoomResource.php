@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources;
 
+use Carbon\Carbon;
 use Filament\Forms;
 use App\Models\Room;
 use Filament\Tables;
@@ -9,6 +10,7 @@ use Filament\Forms\Form;
 use Filament\Tables\Table;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Filament\Resources\Resource;
+use Filament\Forms\Components\Select;
 use Filament\Support\Enums\FontWeight;
 use Filament\Tables\Columns\Layout\Split;
 use Filament\Tables\Columns\Layout\Stack;
@@ -89,28 +91,48 @@ class RoomResource extends Resource
                     ->icon('heroicon-o-printer')
                     ->visible(fn() => auth()->user()?->hasRole(['super_admin', 'admin']))
                     ->color('danger')
-                    ->action(function (Room $record) {
+                    ->form([
+                        Select::make('month')
+                            ->label('Pilih Bulan')
+                            ->options(
+                                collect(range(0, 11))->mapWithKeys(function ($i) {
+                                    $date = Carbon::now()->startOfYear()->addMonths($i);
+                                    return [$date->format('Y-m') => $date->translatedFormat('F Y')]; // e.g. Januari 2025
+                                })->toArray()
+                            )
+                            ->required()
+                            ->searchable()
+                            ->preload(),
+                    ])
+                    ->action(function (array $data, Room $record) {
                         try {
-                            $events = $record->events()->orderBy('date')->get();
-                    
+                            $month = Carbon::parse($data['month']);
+
+                            // Filter events by month + year
+                            $events = $record->events()
+                                ->whereMonth('date', $month->month)
+                                ->whereYear('date', $month->year)
+                                ->orderBy('date')
+                                ->get();
+
                             $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('exports.room-events', [
                                 'room' => $record,
                                 'events' => $events,
+                                'selectedMonth' => $month, // ✅ pass to view
                             ]);
-                    
-                            $filename = 'jadwal_' . str($record->name)->slug() . '_' . now()->format('Ymd_His') . '.pdf';
+
+                            $filename = 'jadwal_' . str($record->name)->slug() . '_' . $month->format('Ym') . '_' . now()->format('His') . '.pdf';
                             $path = storage_path("app/{$filename}");
-                    
+
                             $pdf->save($path);
-                    
+
                             return response()->download($path)->deleteFileAfterSend(true);
-                    
                         } catch (\Throwable $e) {
                             \Log::error('[EXPORT PDF ERROR]', [
                                 'error' => $e->getMessage(),
                                 'trace' => $e->getTraceAsString(),
                             ]);
-                    
+
                             \Filament\Notifications\Notification::make()
                                 ->title('Gagal export PDF')
                                 ->body($e->getMessage())
@@ -118,7 +140,7 @@ class RoomResource extends Resource
                                 ->send();
                         }
                     })
-                    
+
             ])
             ->bulkActions([
                 // Tables\Actions\BulkActionGroup::make([

@@ -85,7 +85,7 @@
     {{-- Title --}}
     <div class="title">
         LAPORAN PEMINJAMAN RUANGAN<br>
-        PERIODE: {{ now()->translatedFormat('F Y') }}<br>
+        PERIODE: {{ $selectedMonth->translatedFormat('F Y') }} <br>
         NAMA RUANG: {{ $room->name }}
     </div>
 
