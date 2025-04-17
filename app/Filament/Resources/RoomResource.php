@@ -75,7 +75,7 @@ class RoomResource extends Resource
             ])
             ->contentGrid([
                 'md' => 2,
-                'xl' => 4,
+                'xl' => 3,
             ])
             ->filters([
                 //
