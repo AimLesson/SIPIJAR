@@ -87,7 +87,8 @@ class RoomResource extends Resource
                 Tables\Actions\Action::make('Export Events')
                     ->label('Export Jadwal')
                     ->icon('heroicon-o-printer')
-                    ->color('gray')
+                    ->visible(fn() => auth()->user()?->hasRole(['super_admin', 'admin']))
+                    ->color('danger')
                     ->action(function (Room $record) {
                         try {
                             $events = $record->events()->orderBy('date')->get();

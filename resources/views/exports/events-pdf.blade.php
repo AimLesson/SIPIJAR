@@ -92,6 +92,7 @@
                 <th>Asal Bidang</th>
                 <th>Tanggal</th>
                 <th>Waktu</th>
+                <th>Tujuan Kegiatan</th>
                 <th>Jumlah Tamu</th>
                 <th>Status</th>
             </tr>
@@ -104,6 +105,7 @@
                     <td>{{ $event->asal_bidang }}</td>
                     <td>{{ \Carbon\Carbon::parse($event->date)->format('d/m/Y') }}</td>
                     <td>{{ $event->start_time }} - {{ $event->finish_time }}</td>
+                    <td>{{ $event->info }}</td>
                     <td>{{ $event->guest_count }}</td>
                     <td>{{ $event->is_approve ? 'Disetujui' : 'Belum Disetujui' }}</td>
                 </tr>

@@ -172,6 +172,7 @@ class EventResource extends Resource
                 Action::make('Export PDF')
                     ->label('Export PDF')
                     ->icon('heroicon-o-document-arrow-down')
+                    ->visible(fn() => auth()->user()?->hasRole(['super_admin', 'admin']))
                     ->action(function () {
                         $events = Event::all(); // Or apply filters if needed
             
