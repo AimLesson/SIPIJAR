@@ -34,6 +34,7 @@ class CreateEvent extends CreateRecord
                 'room_id' => 'Jadwal bentrok dengan kegiatan lain di ruangan ini.',
             ]);
         }
+        $data['user_id'] = auth()->id();
 
         return $data;
     }

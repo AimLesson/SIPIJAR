@@ -8,10 +8,13 @@ use Filament\Tables;
 use App\Models\Event;
 use Filament\Forms\Form;
 use Filament\Tables\Table;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Filament\Resources\Resource;
 use App\Helpers\NotificationHelper;
+use Filament\Tables\Actions\Action;
 use Illuminate\Support\Facades\Log;
 use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Textarea;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Forms\Components\TextInput;
@@ -84,6 +87,19 @@ class EventResource extends Resource
                     ->numeric()
                     ->minValue(0)
                     ->required(),
+
+                Textarea::make('info')
+                    ->label('Tujuan Kegiatan')
+                    ->rows(3)
+                    ->maxLength(500)
+                    ->required(),
+
+                Textarea::make('notes')
+                    ->label('Catatan')
+                    ->rows(3)
+                    ->maxLength(500)
+                    ->helperText('Opsional, jika ada catatan khusus persetujuan untuk peminjaman')
+                    ->visible(fn() => auth()->user()?->hasRole(['super_admin', 'admin'])),
             ]);
     }
 
@@ -103,7 +119,9 @@ class EventResource extends Resource
                     ->state(fn($record) => $record->is_approve)
                     ->badge()
                     ->formatStateUsing(fn($state) => $state ? 'Disetujui' : 'Belum Disetujui')
-                    ->color(fn($state) => $state ? 'success' : 'danger'),
+                    ->color(fn($state) => $state ? 'success' : 'danger')
+                    ->extraAttributes(['class' => 'cursor-pointer'])
+                    ->tooltip(fn($record) => $record->notes ?? 'Tidak ada catatan'),
 
                 ToggleColumn::make('is_approve')
                     ->label('Ubah Status')
@@ -149,6 +167,21 @@ class EventResource extends Resource
                         }
                     }),
             ])
+            ->headerActions([
+                Action::make('Export PDF')
+                    ->label('Export PDF')
+                    ->icon('heroicon-o-document-arrow-down')
+                    ->action(function () {
+                        $events = Event::all(); // Or apply filters if needed
+            
+                        $pdf = Pdf::loadView('exports.events-pdf', ['events' => $events]);
+
+                        $filename = 'daftar_kegiatan_' . now()->format('Ymd_His') . '.pdf';
+                        $pdf->save(storage_path("app/public/{$filename}"));
+
+                        return response()->download(storage_path("app/public/{$filename}"))->deleteFileAfterSend(true);
+                    }),
+            ])
             ->actions([
                 Tables\Actions\EditAction::make(),
             ])
@@ -175,5 +208,18 @@ class EventResource extends Resource
             'create' => Pages\CreateEvent::route('/create'),
             'edit' => Pages\EditEvent::route('/{record}/edit'),
         ];
+    }
+
+    public static function getEloquentQuery(): Builder
+    {
+        $query = parent::getEloquentQuery();
+
+        // Show all for admin/super_admin
+        if (auth()->user()?->hasRole(['admin', 'super_admin'])) {
+            return $query;
+        }
+
+        // Limit to only events by current user
+        return $query->where('user_id', auth()->id());
     }
 }

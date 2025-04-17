@@ -16,11 +16,19 @@ class Event extends Model
         'finish_time',
         'guest_count',
         'is_approved',
+        'user_id', // ✅ tambahkan agar mass assignable
+        'notes',
+        'info',
     ];
 
     public function room()
     {
         return $this->belongsTo(Room::class, 'room_id', 'id');
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
     }
 
     public static function hasScheduleConflict($roomId, $date, $startTime, $finishTime, $excludeId = null): bool
