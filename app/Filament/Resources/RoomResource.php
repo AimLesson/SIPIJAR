@@ -7,6 +7,7 @@ use App\Models\Room;
 use Filament\Tables;
 use Filament\Forms\Form;
 use Filament\Tables\Table;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Filament\Resources\Resource;
 use Filament\Support\Enums\FontWeight;
 use Filament\Tables\Columns\Layout\Split;
@@ -64,10 +65,10 @@ class RoomResource extends Resource
                             ->label('Kapasitas')
                             ->alignLeft()
                             ->suffix(' orang'),
-                
+
                         Tables\Columns\ToggleColumn::make('status')
                             ->label('Status Ketersediaan')
-                            ->visible(fn () => auth()->user()->hasRole(['super_admin', 'admin']))
+                            ->visible(fn() => auth()->user()->hasRole(['super_admin', 'admin']))
                             ->alignLeft(),
                     ])->space(1), // Optional: add spacing between items
                 ])
@@ -83,6 +84,40 @@ class RoomResource extends Resource
                 Tables\Actions\ViewAction::make('Lihat Jadwal'),
                 Tables\Actions\EditAction::make()
                     ->visible(fn() => auth()->user()->hasRole(['super_admin', 'admin'])),
+                Tables\Actions\Action::make('Export Events')
+                    ->label('Export Jadwal')
+                    ->icon('heroicon-o-printer')
+                    ->color('gray')
+                    ->action(function (Room $record) {
+                        try {
+                            $events = $record->events()->orderBy('date')->get();
+                    
+                            $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('exports.room-events', [
+                                'room' => $record,
+                                'events' => $events,
+                            ]);
+                    
+                            $filename = 'jadwal_' . str($record->name)->slug() . '_' . now()->format('Ymd_His') . '.pdf';
+                            $path = storage_path("app/{$filename}");
+                    
+                            $pdf->save($path);
+                    
+                            return response()->download($path)->deleteFileAfterSend(true);
+                    
+                        } catch (\Throwable $e) {
+                            \Log::error('[EXPORT PDF ERROR]', [
+                                'error' => $e->getMessage(),
+                                'trace' => $e->getTraceAsString(),
+                            ]);
+                    
+                            \Filament\Notifications\Notification::make()
+                                ->title('Gagal export PDF')
+                                ->body($e->getMessage())
+                                ->danger()
+                                ->send();
+                        }
+                    })
+                    
             ])
             ->bulkActions([
                 // Tables\Actions\BulkActionGroup::make([

@@ -8,7 +8,7 @@ return [
     ],
     'page' => [
         'title' => 'Settings',
-        'navigation_label' => 'Portal Settings',
+        'navigation_label' => 'Website Settings',
     ],
     'notifications' => [
         'saved' => 'Saved',

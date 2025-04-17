@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
     <meta charset="UTF-8">
     <style>
@@ -62,9 +63,10 @@
         }
     </style>
 </head>
+
 <body>
-        {{-- Header: Logo + Instansi Info --}}
-        <table class="header-table">
+    {{-- Header: Logo + Instansi Info --}}
+    <table class="header-table">
         <tr>
             <td class="logo">
                 <img src="file://{{ public_path('logopdf.jpg') }}" alt="Logo" style="width: 100px;">
@@ -79,36 +81,64 @@
             </td>
         </tr>
     </table>
+
     {{-- Title --}}
     <div class="title">
         LAPORAN PEMINJAMAN RUANGAN<br>
+        PERIODE: {{ now()->translatedFormat('F Y') }}<br>
+        NAMA RUANG: {{ $room->name }}
     </div>
 
+    {{-- Event Table --}}
     <table>
         <thead>
             <tr>
-                <th>Nama</th>
+                <th>No</th>
+                <th>Acara</th>
+                <th>Jumlah Peserta</th>
                 <th>Ruangan</th>
-                <th>Asal Bidang</th>
+                <th>Penanggung Jawab</th>
+                <th>Pengguna</th>
                 <th>Tanggal</th>
-                <th>Waktu</th>
-                <th>Jumlah Tamu</th>
-                <th>Status</th>
+                <th>Mulai</th>
+                <th>Selesai</th>
+                <th>Durasi</th>
             </tr>
         </thead>
         <tbody>
-            @foreach($events as $event)
+            @forelse($events as $i => $event)
+                @php
+                    $start = \Carbon\Carbon::parse($event->start_time);
+                    $end = \Carbon\Carbon::parse($event->finish_time);
+                    $duration = $start->lt($end) ? round($start->floatDiffInMinutes($end), 1) : 0;
+                @endphp
                 <tr>
+                    <td>{{ $i + 1 }}</td>
                     <td>{{ $event->name }}</td>
-                    <td>{{ $event->room->name ?? '-' }}</td>
-                    <td>{{ $event->asal_bidang }}</td>
-                    <td>{{ \Carbon\Carbon::parse($event->date)->format('d/m/Y') }}</td>
-                    <td>{{ $event->start_time }} - {{ $event->finish_time }}</td>
                     <td>{{ $event->guest_count }}</td>
-                    <td>{{ $event->is_approve ? 'Disetujui' : 'Belum Disetujui' }}</td>
+                    <td>{{ $room->name }}</td>
+                    <td>{{ $event->asal_bidang }}</td>
+                    <td>{{ $event->user->name ?? '-' }}</td>
+                    <td>{{ \Carbon\Carbon::parse($event->date)->format('d/m/Y') }}</td>
+                    <td>{{ $event->start_time }}</td>
+                    <td>{{ $event->finish_time }}</td>
+                    <td>{{ $duration }} menit</td>
                 </tr>
-            @endforeach
+            @empty
+                <tr>
+                    <td colspan="10">Tidak ada data peminjaman untuk ruangan ini.</td>
+                </tr>
+            @endforelse
         </tbody>
     </table>
+
+    {{-- Footer --}}
+    <div class="footer">
+        <p>Purwokerto, {{ now()->translatedFormat('d F Y') }}</p>
+        <p>Mengetahui,</p>
+        <br><br><br>
+        <p><strong>Sekretariat</strong></p>
+    </div>
 </body>
+
 </html>
