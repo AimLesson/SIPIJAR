@@ -114,7 +114,9 @@ class EventResource extends Resource
                 TextColumn::make('start_time')->time()->sortable(),
                 TextColumn::make('finish_time')->time()->sortable(),
                 TextColumn::make('guest_count')->numeric()->sortable(),
-                TextColumn::make('info')->limit(50)->label('Tujuan Kegiatan'),
+                TextColumn::make('info')
+                    ->label('Tujuan Kegiatan')
+                    ->wrap(),
                 TextColumn::make('is_approved_badge')
                     ->label('Status')
                     ->state(fn($record) => $record->is_approve)
