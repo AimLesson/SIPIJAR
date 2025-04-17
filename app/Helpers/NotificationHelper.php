@@ -26,7 +26,7 @@ class NotificationHelper
                 'countryCode' => '62',
             ],
             CURLOPT_HTTPHEADER => [
-                'Authorization: pa4EpJhHMAa5jaCjkRzJ' //change TOKEN to your actual token
+                'Authorization: WpnbU2JAAetCeWb7XU3P' //change TOKEN to your actual token
             ],
         ]);
     
