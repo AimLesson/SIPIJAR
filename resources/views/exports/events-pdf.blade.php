@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
     <meta charset="UTF-8">
     <style>
@@ -62,9 +63,10 @@
         }
     </style>
 </head>
+
 <body>
-        {{-- Header: Logo + Instansi Info --}}
-        <table class="header-table">
+    {{-- Header: Logo + Instansi Info --}}
+    <table class="header-table">
         <tr>
             <td class="logo">
                 <img src="file://{{ public_path('logopdf.jpg') }}" alt="Logo" style="width: 100px;">
@@ -112,5 +114,13 @@
             @endforeach
         </tbody>
     </table>
+    {{-- Footer --}}
+    <div class="footer">
+        <p>Purwokerto, {{ now()->translatedFormat('d F Y') }}</p>
+        <p>Mengetahui,</p>
+        <br><br><br>
+        <p><strong>Sekretariat</strong></p>
+    </div>
 </body>
+
 </html>
