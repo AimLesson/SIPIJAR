@@ -10,7 +10,7 @@ class SheetSyncController extends Controller
     // Return data for Google Sheets (GET)
     public function getData()
     {
-        $data = DB::table('your_table_name')->get();
+        $data = Event::all();
         return response()->json($data);
     }
 
