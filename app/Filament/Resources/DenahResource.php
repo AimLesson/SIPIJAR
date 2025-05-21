@@ -21,7 +21,7 @@ class DenahResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
-    protected static ?string $pluralLabel = 'Denah';
+    protected static ?string $pluralLabel = 'Denah Ruangan';
 
     public static function form(Form $form): Form
     {
@@ -40,7 +40,7 @@ class DenahResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\ImageColumn::make('picture')
-                    ->label('Denah')
+                    ->label('Gambar Denah')
                     ->alignCenter()
                     ->width(600)
                     ->height(300)
