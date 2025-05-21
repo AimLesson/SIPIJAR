@@ -84,6 +84,7 @@ class RoomResource extends Resource
             ])
             ->actions([
                 Tables\Actions\ViewAction::make('Lihat Jadwal'),
+                Tables\Actions\DeleteAction::make('Lihat Jadwal'),
                 Tables\Actions\EditAction::make()
                     ->visible(fn() => auth()->user()->hasRole(['super_admin', 'admin'])),
                 Tables\Actions\Action::make('Export Events')
