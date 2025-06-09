@@ -83,15 +83,15 @@ class RoomResource extends Resource
                 //
             ])
             ->actions([
-                Tables\Actions\ViewAction::make('Lihat Jadwal'),
-                Tables\Actions\DeleteAction::make('Lihat Jadwal'),
+                Tables\Actions\ViewAction::make('Lihat Ruang'),
+                Tables\Actions\DeleteAction::make('Hapus Ruang'),
                 Tables\Actions\EditAction::make()
                     ->visible(fn() => auth()->user()->hasRole(['super_admin', 'admin'])),
                 Tables\Actions\Action::make('Export Events')
-                    ->label('Export Jadwal')
+                    ->label('Jadwal')
                     ->icon('heroicon-o-printer')
                     ->visible(fn() => auth()->user()?->hasRole(['super_admin', 'admin']))
-                    ->color('danger')
+                    ->color('success')
                     ->form([
                         Select::make('month')
                             ->label('Pilih Bulan')
