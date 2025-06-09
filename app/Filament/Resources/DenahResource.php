@@ -55,8 +55,8 @@ class DenahResource extends Resource
                 //
             ])
             ->actions([
-                Tables\Actions\ViewAction::make(),
-                Tables\Actions\EditAction::make(),
+                Tables\Actions\ViewAction::make('Lihat Denah'),
+                Tables\Actions\EditAction::make('Edit Denah')
             ])
             ->bulkActions([
                 // Tables\Actions\BulkActionGroup::make([
@@ -78,7 +78,7 @@ class DenahResource extends Resource
             'index' => Pages\ListDenahs::route('/'),
             // 'create' => Pages\CreateDenah::route('/create'),
             // 'view' => Pages\ViewDenah::route('/{record}'),
-            // 'edit' => Pages\EditDenah::route('/{record}/edit'),
+            'edit' => Pages\EditDenah::route('/{record}/edit'),
         ];
     }
 }
