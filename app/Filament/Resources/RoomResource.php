@@ -166,4 +166,17 @@ class RoomResource extends Resource
             // 'edit' => Pages\EditRoom::route('/{record}/edit'),
         ];
     }
+
+    public static function getEloquentQuery(): Builder
+    {
+        $query = parent::getEloquentQuery();
+
+        // If the current user is a regular user, only show rooms with status=true
+        if (auth()->check() && auth()->user()->hasRole('user')) {
+            $query->where('status', true);
+        }
+
+        return $query;
+    }
+
 }
