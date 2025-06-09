@@ -39,13 +39,15 @@ class DenahResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\ImageColumn::make('picture')
-                    ->label('Gambar Denah')
-                    ->alignCenter()
-                    ->width(600)
-                    ->height(300)
-                    ->columnSpan('full')
-                    ->extraAttributes(['class' => 'rounded-lg shadow-lg']),
+                Stack::make([
+                    Tables\Columns\ImageColumn::make('picture')
+                        ->label('Gambar Denah')
+                        ->alignCenter()
+                        ->width(600)
+                        ->height(350)
+                        ->columnSpan('full')
+                        ->extraAttributes(['class' => 'rounded-lg shadow-lg']),
+                ]),
             ])
             ->contentGrid([
                 'md' => 1,
@@ -55,8 +57,8 @@ class DenahResource extends Resource
                 //
             ])
             ->actions([
-                Tables\Actions\ViewAction::make('Lihat Denah'),
-                Tables\Actions\EditAction::make('Edit Denah')
+                Tables\Actions\ViewAction::make(),
+                Tables\Actions\EditAction::make()
             ])
             ->bulkActions([
                 // Tables\Actions\BulkActionGroup::make([
@@ -78,7 +80,7 @@ class DenahResource extends Resource
             'index' => Pages\ListDenahs::route('/'),
             // 'create' => Pages\CreateDenah::route('/create'),
             // 'view' => Pages\ViewDenah::route('/{record}'),
-            'edit' => Pages\EditDenah::route('/{record}/edit'),
+            // 'edit' => Pages\EditDenah::route('/{record}/edit'),
         ];
     }
 }
