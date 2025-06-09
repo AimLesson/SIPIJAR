@@ -167,16 +167,16 @@ class RoomResource extends Resource
         ];
     }
 
-    public static function getEloquentQuery(): Builder
-    {
-        $query = parent::getEloquentQuery();
+    // public static function getEloquentQuery(): Builder
+    // {
+    //     $query = parent::getEloquentQuery();
 
-        // If the current user is a regular user, only show rooms with status=true
-        if (auth()->check() && auth()->user()->hasRole('user')) {
-            $query->where('status', true);
-        }
+    //     // If the current user is a regular user, only show rooms with status=true
+    //     if (auth()->check() && auth()->user()->hasRole('user')) {
+    //         $query->where('status', true);
+    //     }
 
-        return $query;
-    }
+    //     return $query;
+    // }
 
 }
