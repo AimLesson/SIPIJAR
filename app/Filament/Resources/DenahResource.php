@@ -43,8 +43,8 @@ class DenahResource extends Resource
                     Tables\Columns\ImageColumn::make('picture')
                         ->label('Gambar Denah')
                         ->alignCenter()
-                        ->width(600)
-                        ->height(350)
+                        ->width(700)
+                        ->height(500)
                         ->columnSpan('full')
                         ->extraAttributes(['class' => 'rounded-lg shadow-lg']),
                 ]),
