@@ -42,6 +42,7 @@ class EventResource extends Resource
         return $form
             ->schema([
                 TextInput::make('name')
+                    ->label('Nama Kegiatan')
                     ->required()
                     ->maxLength(255),
 
@@ -188,6 +189,7 @@ class EventResource extends Resource
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
+                Tables\Actions\DeleteAction::make(),
             ])
             ->bulkActions([
                 ExportBulkAction::make()->exports([
