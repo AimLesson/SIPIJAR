@@ -89,6 +89,7 @@ class RoomResource extends Resource
                 Tables\Actions\Action::make('Export Events')
                     ->label('Jadwal')
                     ->icon('heroicon-o-printer')
+                    ->visible(fn() => auth()->user()?->hasRole(['super_admin', 'admin']))
                     ->color('success')
                     ->form([
                         Select::make('month')
